@@ -1,0 +1,14 @@
+[
+  {
+    "id": "item_1",
+    "prompt": "Write a sentence about a dog and a frisbee.",
+    "model_A_output": "The dog caught the frisbee.",
+    "model_B_output": "A frisbee was thrown for the dog."
+  },
+  {
+    "id": "item_2",
+    "prompt": "Describe a rainy day.",
+    "model_A_output": "Rain fell from the grey sky.",
+    "model_B_output": "The sky was grey and it was raining."
+  }
+]
