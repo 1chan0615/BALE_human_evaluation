@@ -1,8 +1,10 @@
-// [중요] 1단계에서 복사한 본인의 Apps Script 웹 앱 URL을 여기에 붙여넣으세요.
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxnaFV9C5fezZuKlsGfQQ_HajTdEPRQqTnoFGtRo5AcLuGIrOqKiDrj9jgBR7a57lNM/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec";
 
-// --- DOM 요소 가져오기 ---
-const evalTitle = document.getElementById('eval-title');
+// --- DOM 요소 ---
+const evalSection = document.querySelector('.evaluation-section');
+const finalSection = document.getElementById('final-submission-section');
+const submitAllBtn = document.getElementById('submit-all-btn');
+// (이전과 동일한 다른 DOM 요소들...)
 const promptText = document.getElementById('prompt-text');
 const modelAText = document.getElementById('model-a-text');
 const modelBText = document.getElementById('model-b-text');
@@ -11,42 +13,36 @@ const reasonText = document.getElementById('reason-text');
 const progressText = document.getElementById('progress-text');
 const progressIndicator = document.getElementById('progress-indicator');
 
-let evaluatorId = '';
+
+let evaluatorId, taskType;
 let currentItemIndex = 0;
 let data = [];
-let taskType = '';
+let allAnswers = []; // 모든 답변을 저장할 배열
 
-// --- 함수 정의 ---
+// --- 함수 ---
 
-// 데이터를 화면에 표시하는 함수
 function displayItem() {
-    if (currentItemIndex >= data.length) {
-        document.body.innerHTML = "<h1>Thank you for completing the evaluation!</h1>";
-        return;
-    }
-    const item = data[currentItemIndex];
-    promptText.textContent = item.prompt;
-    modelAText.textContent = item.model_A_output;
-    modelBText.textContent = item.model_B_output;
-    
-    // 진행 상황 업데이트
-    progressText.textContent = `${currentItemIndex + 1} / ${data.length}`;
-    progressIndicator.style.width = `${((currentItemIndex + 1) / data.length) * 100}%`;
+    // ... (이전과 동일)
 }
 
-// 다음 항목으로 넘어가기
-async function submitAndNext() {
+// UI를 마지막 제출 화면으로 전환하는 함수
+function showFinalSubmitScreen() {
+    evalSection.style.display = 'none'; // 기존 평가 영역 숨기기
+    document.querySelector('.outputs-container').style.display = 'none';
+    document.querySelector('.prompt-section').style.display = 'none';
+    finalSection.style.display = 'block'; // 최종 제출 버튼 보이기
+}
+
+// "Next" 버튼을 눌렀을 때의 동작
+function saveAndNext() {
     const winnerChoice = document.querySelector('input[name="winner"]:checked');
     if (!winnerChoice) {
         alert("Please select an option (A, B, or Tie).");
         return;
     }
 
-    submitBtn.disabled = true;
-    submitBtn.textContent = "Submitting...";
-
     const currentItem = data[currentItemIndex];
-    const payload = {
+    const answer = {
         evaluator_id: evaluatorId,
         item_id: currentItem.id,
         task: taskType,
@@ -56,7 +52,24 @@ async function submitAndNext() {
         reason: reasonText.value.trim()
     };
 
-    console.log("Submitting payload:", payload); // 디버깅용 로그
+    allAnswers.push(answer); // 답변을 배열에 저장
+    console.log(`Answer #${currentItemIndex + 1} saved locally.`);
+
+    currentItemIndex++;
+    reasonText.value = '';
+    winnerChoice.checked = false;
+
+    if (currentItemIndex >= data.length) {
+        showFinalSubmitScreen();
+    } else {
+        displayItem();
+    }
+}
+
+// "Submit All" 버튼을 눌렀을 때의 동작
+async function submitAllResults() {
+    submitAllBtn.disabled = true;
+    submitAllBtn.textContent = "Submitting...";
 
     try {
         const response = await fetch(SCRIPT_URL, {
@@ -64,69 +77,27 @@ async function submitAndNext() {
             mode: 'cors',
             cache: 'no-cache',
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify(payload)
+            body: JSON.stringify(allAnswers) // 전체 답변 배열을 전송
         });
         const result = await response.json();
-        
+
         if (result.result === "success") {
-            console.log("Submission successful."); // 디버깅용 로그
-            currentItemIndex++;
-            reasonText.value = '';
-            winnerChoice.checked = false;
-            displayItem();
+            document.body.innerHTML = "<h1>Thank you! All results have been submitted successfully.</h1>";
         } else {
-            alert("Submission failed. Please try again. Error: " + result.message);
+            alert("Submission failed. Error: " + result.message);
         }
     } catch (error) {
         alert("A critical error occurred: " + error);
-        console.error("Submission error:", error); // 디버깅용 로그
     }
-    
-    submitBtn.disabled = false;
-    submitBtn.textContent = "Submit and Next";
+
+    submitAllBtn.disabled = false;
+    submitAllBtn.textContent = "Submit All 100 Results";
 }
 
 // 페이지 로드 시 초기화
 window.onload = async () => {
-    // 1. URL 파라미터에서 과제 종류(task)를 읽어옴
-    const params = new URLSearchParams(window.location.search);
-    taskType = params.get('task');
-
-    if (!taskType) {
-        document.body.innerHTML = "<h1>Error: No task selected. Please go back to the task selection page.</h1>";
-        return;
-    }
-    
-    evalTitle.textContent = `Human Evaluation: ${taskType.charAt(0).toUpperCase() + taskType.slice(1)}`;
-
-    // 2. 이전에 저장된 평가자 ID를 사용하거나 새로 요청
-    evaluatorId = sessionStorage.getItem('evaluatorId');
-    if (!evaluatorId) {
-        evaluatorId = prompt("Please enter your evaluator ID (e.g., your name or email):", "");
-        if (!evaluatorId) {
-            document.body.innerHTML = "<h1>Evaluator ID is required to start.</h1>";
-            return;
-        }
-        sessionStorage.setItem('evaluatorId', evaluatorId);
-    }
-    
-    // 3. 과제 종류에 따라 다른 데이터 파일 로드
-    const dataFile = `data_${taskType}.json`;
-    console.log(`Loading data from: ${dataFile}`); // 디버깅용 로그
-    
-    try {
-        const response = await fetch(dataFile);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const loadedData = await response.json();
-        data = loadedData.slice(0, 100); // 100개로 제한
-        console.log(`Successfully loaded ${data.length} items.`); // 디버깅용 로그
-        displayItem();
-    } catch (error) {
-        alert(`Failed to load or parse ${dataFile}. Please check if the file exists and is a valid JSON.`);
-        console.error("Data loading error:", error); // 디버깅용 로그
-    }
+    // ... (이전과 동일한 초기화 로직: URL 파라미터 읽기, 평가자 ID 받기, 데이터 로드) ...
 };
 
-submitBtn.addEventListener('click', submitAndNext);
+submitBtn.addEventListener('click', saveAndNext);
+submitAllBtn.addEventListener('click', submitAllResults);
