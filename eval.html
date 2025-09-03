@@ -8,11 +8,45 @@
 <body>
     <div class="container">
         <h1 id="eval-title">Human Evaluation</h1>
-        <div class="progress-bar">...</div>
-        <p id="progress-text">...</p>
-        <div class="prompt-section">...</div>
-        <div class="outputs-container">...</div>
-        <div class="evaluation-section">...</div>
+        
+        <div class="progress-bar">
+            <div id="progress-indicator"></div>
+        </div>
+        <p id="progress-text">0 / 0</p>
+        <hr>
+
+        <div class="prompt-section">
+            <h3>Prompt / Concepts:</h3>
+            <p id="prompt-text">Loading...</p>
+        </div>
+
+        <div class="outputs-container">
+            <div class="output-box" id="output-a">
+                <h3>Model A</h3>
+                <p id="model-a-text"></p>
+            </div>
+            <div class="output-box" id="output-b">
+                <h3>Model B</h3>
+                <p id="model-b-text"></p>
+            </div>
+        </div>
+
+        <div class="evaluation-section">
+            <h3>Which model's output is better?</h3>
+            <div class="choices">
+                <input type="radio" id="choice-a" name="winner" value="A">
+                <label for="choice-a">Model A is better</label>
+
+                <input type="radio" id="choice-b" name="winner" value="B">
+                <label for="choice-b">Model B is better</label>
+
+                <input type="radio" id="choice-tie" name="winner" value="Tie">
+                <label for="choice-tie">Both are equally good/bad (Tie)</label>
+            </div>
+            <textarea id="reason-text" placeholder="Reason for your choice (optional)"></textarea>
+            <button id="submit-btn">Submit and Next</button>
+        </div>
     </div>
-    <script src="eval.js"></script> </body>
+    <script src="eval.js"></script>
+</body>
 </html>
