@@ -22,8 +22,20 @@ let allAnswers = []; // 모든 답변을 저장할 배열
 // --- 함수 ---
 
 function displayItem() {
-    // ... (이전과 동일)
+    if (currentItemIndex >= data.length) {
+        document.body.innerHTML = "<h1>Thank you for completing the evaluation!</h1>";
+        return;
+    }
+    const item = data[currentItemIndex];
+    promptText.textContent = item.prompt;
+    modelAText.textContent = item.model_A_output;
+    modelBText.textContent = item.model_B_output;
+    
+    // 진행 상황 업데이트
+    progressText.textContent = `${currentItemIndex + 1} / ${data.length}`;
+    progressIndicator.style.width = `${((currentItemIndex + 1) / data.length) * 100}%`;
 }
+
 
 // UI를 마지막 제출 화면으로 전환하는 함수
 function showFinalSubmitScreen() {
@@ -96,7 +108,21 @@ async function submitAllResults() {
 
 // 페이지 로드 시 초기화
 window.onload = async () => {
-    // ... (이전과 동일한 초기화 로직: URL 파라미터 읽기, 평가자 ID 받기, 데이터 로드) ...
+    // 평가자 ID 요청
+    evaluatorId = prompt("Please enter your evaluator ID (e.g., your name or email):", "");
+    if (!evaluatorId) {
+        document.body.innerHTML = "<h1>Evaluator ID is required to start.</h1>";
+        return;
+    }
+
+    // 평가 데이터 로드
+    try {
+        const response = await fetch('data.json');
+        data = await response.json();
+        displayItem();
+    } catch (error) {
+        alert("Failed to load data.json.");
+    }
 };
 
 submitBtn.addEventListener('click', saveAndNext);
