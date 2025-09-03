@@ -1,14 +1,12 @@
-body { font-family: sans-serif; background-color: #f4f4f9; color: #333; }
-.container { max-width: 900px; margin: 2rem auto; padding: 2rem; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-.outputs-container { display: flex; gap: 2rem; margin-bottom: 2rem; }
-.output-box { flex: 1; padding: 1.5rem; border: 1px solid #ddd; border-radius: 6px; background: #fafafa; }
-h1, h3 { color: #1a1a1a; }
-.prompt-section p { background: #eef; padding: 1rem; border-radius: 6px; }
-.choices { margin-bottom: 1rem; }
-.choices label { margin-right: 1.5rem; }
-textarea { width: 100%; height: 80px; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 1rem; }
-button { width: 100%; padding: 1rem; background-color: #007bff; color: white; border: none; border-radius: 4px; font-size: 1rem; cursor: pointer; }
-button:hover { background-color: #0056b3; }
-.progress-bar { width: 100%; background-color: #e0e0e0; border-radius: 5px; overflow: hidden; }
-#progress-indicator { height: 10px; width: 0%; background-color: #4caf50; }
-#progress-text { text-align: center; }
+body { font-family: sans-serif; background-color: #f4f4f9; color: #333; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+.container { max-width: 900px; margin: 2rem; padding: 2rem; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+.text-center { text-align: center; }
+h1 { color: #1a1a1a; }
+.subtitle { font-size: 1.2rem; color: #666; margin-bottom: 2rem; }
+.button-large { display: inline-block; padding: 1rem 2rem; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; font-size: 1.1rem; }
+.button-large:hover { background-color: #0056b3; }
+.task-buttons { margin-top: 2rem; }
+.task-button { display: block; margin: 1rem 0; padding: 1.2rem; background-color: #28a745; color: white; text-decoration: none; border-radius: 5px; font-size: 1.2rem; }
+.task-button:hover { background-color: #218838; }
+/* (이하 스타일은 이전 style.css와 동일) */
+.prompt-section, .outputs-container, .evaluation-section { /* 이전 스타일 ... */ }

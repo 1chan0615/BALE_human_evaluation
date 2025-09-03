@@ -2,50 +2,14 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>ICLR Style Human Evaluation</title>
+    <title>BALE for Text Diffusion</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Human Evaluation</h1>
-        <div class="progress-bar">
-            <div id="progress-indicator"></div>
-        </div>
-        <p id="progress-text">0 / 0</p>
-        <hr>
-
-        <div class="prompt-section">
-            <h3>Prompt:</h3>
-            <p id="prompt-text">Loading...</p>
-        </div>
-
-        <div class="outputs-container">
-            <div class="output-box" id="output-a">
-                <h3>Model A</h3>
-                <p id="model-a-text"></p>
-            </div>
-            <div class="output-box" id="output-b">
-                <h3>Model B</h3>
-                <p id="model-b-text"></p>
-            </div>
-        </div>
-
-        <div class="evaluation-section">
-            <h3>Which model's output is better?</h3>
-            <div class="choices">
-                <input type="radio" id="choice-a" name="winner" value="A">
-                <label for="choice-a">Model A is better</label>
-
-                <input type="radio" id="choice-b" name="winner" value="B">
-                <label for="choice-b">Model B is better</label>
-
-                <input type="radio" id="choice-tie" name="winner" value="Tie">
-                <label for="choice-tie">Both are equally good/bad (Tie)</label>
-            </div>
-            <textarea id="reason-text" placeholder="Reason for your choice (optional)"></textarea>
-            <button id="submit-btn">Submit and Next</button>
-        </div>
+    <div class="container text-center">
+        <h1>ONLINE BUDGET-AWARE GUIDANCE FOR BLOCKWISE DISCRETE TEXT DIFFUSION</h1>
+        <p class="subtitle">Human Evaluation</p>
+        <a href="tasks.html" class="button-large">Start Evaluation</a>
     </div>
-    <script src="script.js"></script>
 </body>
 </html>
