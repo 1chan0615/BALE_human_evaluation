@@ -1,5 +1,5 @@
 // [중요] 1단계에서 복사한 본인의 Apps Script 웹 앱 URL을 여기에 붙여넣으세요.
-const SCRIPT_URL = "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxnaFV9C5fezZuKlsGfQQ_HajTdEPRQqTnoFGtRo5AcLuGIrOqKiDrj9jgBR7a57lNM/exec";
 
 // --- DOM 요소 가져오기 ---
 const evalTitle = document.getElementById('eval-title');
