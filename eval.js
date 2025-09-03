@@ -108,22 +108,31 @@ async function submitAllResults() {
 
 // 페이지 로드 시 초기화
 window.onload = async () => {
-    // 평가자 ID 요청
-    evaluatorId = prompt("Please enter your evaluator ID (e.g., your name or email):", "");
-    if (!evaluatorId) {
-        document.body.innerHTML = "<h1>Evaluator ID is required to start.</h1>";
+    // 1. URL 파라미터에서 과제 종류(task)를 읽어옴
+    const params = new URLSearchParams(window.location.search);
+    taskType = params.get('task'); // 'sentiment' or 'formality'
+
+    if (!taskType) {
+        document.body.innerHTML = "<h1>Error: No task selected.</h1>";
         return;
     }
+    
+    document.getElementById('eval-title').textContent = `Human Evaluation: ${taskType}`;
 
-    // 평가 데이터 로드
+    // 2. 과제 종류에 따라 다른 데이터 파일 로드
+    const dataFile = `data_${taskType}.json`;
+    
     try {
-        const response = await fetch('data.json');
+        const response = await fetch(dataFile);
         data = await response.json();
+        // 3. 데이터를 100개로 제한
+        data = data.slice(0, 100);
         displayItem();
     } catch (error) {
-        alert("Failed to load data.json.");
+        alert(`Failed to load ${dataFile}.`);
     }
 };
+
 
 submitBtn.addEventListener('click', saveAndNext);
 submitAllBtn.addEventListener('click', submitAllResults);
