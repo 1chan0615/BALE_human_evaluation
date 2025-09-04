@@ -16,8 +16,19 @@
         <hr>
 
         <div class="prompt-section">
-            <h3>Prompt / Concepts:</h3>
-            <p id="prompt-text">Loading...</p>
+            <h3>Task Details</h3>
+            <div class="details-box">
+                <p><strong>Prompt:</strong> <span id="prompt-text"></span></p>
+                <hr class="details-hr">
+                <p><strong>Constraints:</strong></p>
+                <ul id="constraints-list">
+                    </ul>
+            </div>
+        </div>
+
+        <div class="guidance-section">
+            <h4>Evaluation Guide</h4>
+            <p>Please read both sentences carefully. For each question below, decide which sentence is better. Consider both how well the sentence satisfies all listed constraints and its overall linguistic quality (e.g., fluency, naturalness, and grammatical correctness).</p>
         </div>
 
         <div class="outputs-container">
@@ -32,19 +43,37 @@
         </div>
 
         <div class="evaluation-section">
-            <h3>Which model's output is better?</h3>
-            <div class="choices">
-                <input type="radio" id="choice-a" name="winner" value="A">
-                <label for="choice-a">Model A is better</label>
+            <div class="question-block">
+                <h3>1. Which output better satisfies the constraints?</h3>
+                <p class="prompt-reminder">(Constraints: <span id="prompt-reminder-text"></span>)</p>
+                <div class="choices">
+                    <input type="radio" id="choice-a-constraint" name="winner_constraint" value="A">
+                    <label for="choice-a-constraint">Model A is better</label>
 
-                <input type="radio" id="choice-b" name="winner" value="B">
-                <label for="choice-b">Model B is better</label>
+                    <input type="radio" id="choice-b-constraint" name="winner_constraint" value="B">
+                    <label for="choice-b-constraint">Model B is better</label>
 
-                <input type="radio" id="choice-tie" name="winner" value="Tie">
-                <label for="choice-tie">Both are equally good/bad (Tie)</label>
+                    <input type="radio" id="choice-tie-constraint" name="winner_constraint" value="Tie">
+                    <label for="choice-tie-constraint">Equally good/bad (Tie)</label>
+                </div>
             </div>
-            <textarea id="reason-text" placeholder="Reason for your choice (optional)"></textarea>
-            <button id="submit-btn">Submit and Next</button>
+
+            <div class="question-block">
+                <h3>2. Which sentence is more natural and fluent?</h3>
+                <div class="choices">
+                    <input type="radio" id="choice-a-natural" name="winner_naturalness" value="A">
+                    <label for="choice-a-natural">Model A is better</label>
+
+                    <input type="radio" id="choice-b-natural" name="winner_naturalness" value="B">
+                    <label for="choice-b-natural">Model B is better</label>
+
+                    <input type="radio" id="choice-tie-natural" name="winner_naturalness" value="Tie">
+                    <label for="choice-tie-natural">Equally good/bad (Tie)</label>
+                </div>
+            </div>
+            
+            <textarea id="reason-text" placeholder="Reason for your choices (optional)"></textarea>
+            <button id="submit-btn">Next</button>
         </div>
         <div id="final-submission-section" style="display: none; text-align: center;">
             <h2>Evaluation Complete</h2>

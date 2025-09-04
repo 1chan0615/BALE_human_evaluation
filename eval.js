@@ -1,4 +1,4 @@
-const SCRIPT_URL = "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzGHJ-MesHOZxIloja7oE5HvWsBIJVCm0kocBjnqEilwK9zQMAie0U0E0-ysHSMgBaq/exec";
 
 // --- DOM 요소 ---
 const evalSection = document.querySelector('.evaluation-section');
@@ -27,6 +27,7 @@ function displayItem() {
         return;
     }
     const item = data[currentItemIndex];
+    document.getElementById('prompt-reminder-text').textContent = item.prompt; // 프롬프트 미리보기 업데이트
     promptText.textContent = item.prompt;
     modelAText.textContent = item.model_A_output;
     modelBText.textContent = item.model_B_output;
@@ -47,29 +48,38 @@ function showFinalSubmitScreen() {
 
 // "Next" 버튼을 눌렀을 때의 동작
 function saveAndNext() {
-    const winnerChoice = document.querySelector('input[name="winner"]:checked');
-    if (!winnerChoice) {
-        alert("Please select an option (A, B, or Tie).");
+    // [수정] 두 질문에 대한 응답을 모두 가져옵니다.
+    const constraintChoice = document.querySelector('input[name="winner_constraint"]:checked');
+    const naturalnessChoice = document.querySelector('input[name="winner_naturalness"]:checked');
+
+    // [수정] 두 질문 모두에 답했는지 확인합니다.
+    if (!constraintChoice || !naturalnessChoice) {
+        alert("Please answer both questions.");
         return;
     }
 
     const currentItem = data[currentItemIndex];
+    
+    // [수정] payload 객체에 두 가지 응답을 모두 담습니다.
     const answer = {
         evaluator_id: evaluatorId,
         item_id: currentItem.id,
         task: taskType,
         model_a_output: currentItem.model_A_output,
         model_b_output: currentItem.model_B_output,
-        winner: winnerChoice.value,
+        winner_constraint: constraintChoice.value,
+        winner_naturalness: naturalnessChoice.value,
         reason: reasonText.value.trim()
     };
-
-    allAnswers.push(answer); // 답변을 배열에 저장
+    
+    allAnswers.push(answer);
     console.log(`Answer #${currentItemIndex + 1} saved locally.`);
 
     currentItemIndex++;
     reasonText.value = '';
-    winnerChoice.checked = false;
+    // [수정] 두 질문의 선택을 모두 초기화합니다.
+    constraintChoice.checked = false;
+    naturalnessChoice.checked = false;
 
     if (currentItemIndex >= data.length) {
         showFinalSubmitScreen();
