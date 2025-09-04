@@ -22,3 +22,42 @@ button:hover { background-color: #0056b3; }
 #progress-text { text-align: center; }
 .question-block { margin-bottom: 2rem; }
 .prompt-reminder { font-size: 0.9rem; color: #666; background-color: #f0f0f0; padding: 0.5rem; border-radius: 4px; }
+
+/* style.css 파일 하단에 추가 */
+
+.details-box {
+    background: #eef;
+    padding: 1rem 1.5rem;
+    border-radius: 6px;
+    font-family: monospace;
+    font-size: 0.95rem;
+}
+
+.details-hr {
+    border: none;
+    border-top: 1px dashed #ccc;
+    margin: 1rem 0;
+}
+
+.details-box ul {
+    list-style-type: none;
+    padding-left: 0;
+    margin-top: 0.5rem;
+}
+
+.details-box li {
+    margin-bottom: 0.25rem;
+}
+
+.guidance-section {
+    margin-top: -1rem;
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: #f0f8ff;
+    border-left: 4px solid #007bff;
+    font-size: 0.9rem;
+}
+
+.guidance-section h4 {
+    margin-top: 0;
+}

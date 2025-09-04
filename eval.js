@@ -27,14 +27,39 @@ function displayItem() {
         return;
     }
     const item = data[currentItemIndex];
-    document.getElementById('prompt-reminder-text').textContent = item.prompt; // 프롬프트 미리보기 업데이트
-    promptText.textContent = item.prompt;
+
+    // --- [수정됨] 상세 정보 표시 ---
+    document.getElementById('prompt-text').textContent = item.prompt;
+    const constraintsList = document.getElementById('constraints-list');
+    constraintsList.innerHTML = ''; // 이전 목록 초기화
+
+    // must_have 정보 추가
+    if (item.must_have && item.must_have.length > 0) {
+        const li = document.createElement('li');
+        li.innerHTML = `<strong>Must Have:</strong> ${item.must_have.join(', ')}`;
+        constraintsList.appendChild(li);
+    }
+    // forbidden 정보 추가
+    if (item.forbidden && item.forbidden.length > 0) {
+        const li = document.createElement('li');
+        li.innerHTML = `<strong>Forbidden:</strong> ${item.forbidden.join(', ')}`;
+        constraintsList.appendChild(li);
+    }
+    // sentiment 정보 추가
+    if (item.sentiment) {
+        const li = document.createElement('li');
+        li.innerHTML = `<strong>Sentiment:</strong> ${item.sentiment}`;
+        constraintsList.appendChild(li);
+    }
+    // ----------------------------
+
     modelAText.textContent = item.model_A_output;
     modelBText.textContent = item.model_B_output;
     
     // 진행 상황 업데이트
     progressText.textContent = `${currentItemIndex + 1} / ${data.length}`;
     progressIndicator.style.width = `${((currentItemIndex + 1) / data.length) * 100}%`;
+    document.getElementById('prompt-reminder-text').textContent = `Concepts: ${item.must_have.join(', ')}`;
 }
 
 
