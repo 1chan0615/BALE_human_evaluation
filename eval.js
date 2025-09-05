@@ -1,4 +1,4 @@
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzGHJ-MesHOZxIloja7oE5HvWsBIJVCm0kocBjnqEilwK9zQMAie0U0E0-ysHSMgBaq/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxVSuZz4g0_Hrkjtjphk-WtHCfhNXqn38h9VG5DJCRqA5xQ5HrWTBeXI39A48G-2fcp/exec";
 
 // --- DOM 요소 ---
 const evalTitle = document.getElementById('eval-title');
