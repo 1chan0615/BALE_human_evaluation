@@ -59,7 +59,24 @@ function displayItem() {
     // 진행 상황 업데이트
     progressText.textContent = `${currentItemIndex + 1} / ${data.length}`;
     progressIndicator.style.width = `${((currentItemIndex + 1) / data.length) * 100}%`;
-    document.getElementById('prompt-reminder-text').textContent = `Concepts: ${item.must_have.join(', ')}`;
+    const reminderElement = document.getElementById('prompt-reminder-text');
+    let reminderParts = []; // 표시할 제약 조건들을 담을 배열
+
+    // 1. must_have 추가
+    if (item.must_have && item.must_have.length > 0) {
+        reminderParts.push(`Concepts: ${item.must_have.join(', ')}`);
+    }
+    // 2. sentiment 추가 (존재할 경우)
+    if (item.sentiment) {
+        reminderParts.push(`Sentiment: ${item.sentiment}`);
+    }
+    // 3. forbidden 추가 (존재할 경우)
+    if (item.forbidden && item.forbidden.length > 0) {
+        reminderParts.push(`Forbidden: ${item.forbidden.join(', ')}`);
+    }
+
+    // 배열의 모든 부분을 ' | '로 연결하여 최종 텍스트 생성
+    reminderElement.textContent = reminderParts.join(' | ');
 }
 
 
