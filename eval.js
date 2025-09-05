@@ -104,7 +104,6 @@ function saveAndNext() {
     
     // [수정] payload 객체에 두 가지 응답을 모두 담습니다.
     const answer = {
-        evaluator_id: evaluatorId,
         item_id: currentItem.id,
         task: taskType,
         model_a_output: currentItem.model_A_output,
@@ -132,16 +131,31 @@ function saveAndNext() {
 
 // "Submit All" 버튼을 눌렀을 때의 동작
 async function submitAllResults() {
+    const evaluatorId = evaluatorIdInput.value.trim();
+    if (!evaluatorId) {
+        alert("Please enter your Evaluator ID before submitting.");
+        return;
+    }
+
     submitAllBtn.disabled = true;
     submitAllBtn.textContent = "Submitting...";
+
+    const payloadToSend = allAnswers.map(answer => {
+        return {
+            evaluator_id: evaluatorId, // 여기서 ID 추가
+            item_id: answer.item_id,
+            task: answer.task,
+            winner_constraint: answer.winner_constraint,
+            winner_naturalness: answer.winner_naturalness,
+            reason: answer.reason
+        };
+    });
 
     try {
         const response = await fetch(SCRIPT_URL, {
             method: 'POST',
             mode: 'cors',
-            cache: 'no-cache',
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify(allAnswers) // 전체 답변 배열을 전송
+            body: JSON.stringify(payloadToSend)
         });
         const result = await response.json();
 
