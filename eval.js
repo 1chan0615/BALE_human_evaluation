@@ -1,6 +1,9 @@
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzGHJ-MesHOZxIloja7oE5HvWsBIJVCm0kocBjnqEilwK9zQMAie0U0E0-ysHSMgBaq/exec";
 
 // --- DOM 요소 ---
+const evalTitle = document.getElementById('eval-title');
+const promptSection = document.querySelector('.prompt-section');
+const outputsContainer = document.querySelector('.outputs-container');
 const evalSection = document.querySelector('.evaluation-section');
 const finalSection = document.getElementById('final-submission-section');
 const submitAllBtn = document.getElementById('submit-all-btn');
@@ -12,6 +15,8 @@ const submitBtn = document.getElementById('submit-btn');
 const reasonText = document.getElementById('reason-text');
 const progressText = document.getElementById('progress-text');
 const progressIndicator = document.getElementById('progress-indicator');
+const constraintsList = document.getElementById('constraints-list');
+const promptReminderText = document.getElementById('prompt-reminder-text');
 
 
 let evaluatorId, taskType;
@@ -27,6 +32,10 @@ function displayItem() {
         return;
     }
     const item = data[currentItemIndex];
+
+    promptText.textContent = item.prompt;
+    modelAText.textContent = item.model_A_output;
+    modelBText.textContent = item.model_B_output;
 
     // --- [수정됨] 상세 정보 표시 ---
     document.getElementById('prompt-text').textContent = item.prompt;
@@ -82,8 +91,10 @@ function displayItem() {
 
 // UI를 마지막 제출 화면으로 전환하는 함수
 function showFinalSubmitScreen() {
-    if (evalSection) evalSection.style.display = 'none';
-    if (finalSection) finalSection.style.display = 'block';
+    if(promptSection) promptSection.style.display = 'none'; // Task Details 숨기기
+    if(outputsContainer) outputsContainer.style.display = 'none';
+    if(evalSection) evalSection.style.display = 'none';
+    if(finalSection) finalSection.style.display = 'block';
 }
 
 // "Next" 버튼을 눌렀을 때의 동작
@@ -101,8 +112,6 @@ function saveAndNext() {
     const answer = {
         item_id: currentItem.id,
         task: taskType,
-        model_a_output: currentItem.model_A_output,
-        model_b_output: currentItem.model_B_output,
         winner_constraint: constraintChoice.value,
         winner_naturalness: naturalnessChoice.value,
         reason: reasonText.value.trim()
@@ -113,7 +122,6 @@ function saveAndNext() {
 
     currentItemIndex++;
     reasonText.value = '';
-    // [수정] 두 질문의 선택을 모두 초기화합니다.
     constraintChoice.checked = false;
     naturalnessChoice.checked = false;
 
