@@ -167,6 +167,10 @@ async function submitAllResults() {
         const response = await fetch(SCRIPT_URL, {
             method: 'POST',
             mode: 'cors',
+            cache: 'no-cache', // 안정성을 위해 추가
+            headers: {
+                'Content-Type': 'text/plain;charset=utf-8',
+            },
             body: JSON.stringify(payloadToSend)
         });
         const result = await response.json();
