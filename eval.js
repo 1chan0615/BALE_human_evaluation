@@ -4,7 +4,7 @@ const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzGHJ-MesHOZxIloja7o
 const evalSection = document.querySelector('.evaluation-section');
 const finalSection = document.getElementById('final-submission-section');
 const submitAllBtn = document.getElementById('submit-all-btn');
-// (이전과 동일한 다른 DOM 요소들...)
+const evaluatorIdInput = document.getElementById('evaluator-id-input');
 const promptText = document.getElementById('prompt-text');
 const modelAText = document.getElementById('model-a-text');
 const modelBText = document.getElementById('model-b-text');
@@ -82,19 +82,15 @@ function displayItem() {
 
 // UI를 마지막 제출 화면으로 전환하는 함수
 function showFinalSubmitScreen() {
-    evalSection.style.display = 'none'; // 기존 평가 영역 숨기기
-    document.querySelector('.outputs-container').style.display = 'none';
-    document.querySelector('.prompt-section').style.display = 'none';
-    finalSection.style.display = 'block'; // 최종 제출 버튼 보이기
+    if (evalSection) evalSection.style.display = 'none';
+    if (finalSection) finalSection.style.display = 'block';
 }
 
 // "Next" 버튼을 눌렀을 때의 동작
 function saveAndNext() {
-    // [수정] 두 질문에 대한 응답을 모두 가져옵니다.
     const constraintChoice = document.querySelector('input[name="winner_constraint"]:checked');
     const naturalnessChoice = document.querySelector('input[name="winner_naturalness"]:checked');
 
-    // [수정] 두 질문 모두에 답했는지 확인합니다.
     if (!constraintChoice || !naturalnessChoice) {
         alert("Please answer both questions.");
         return;
@@ -102,7 +98,6 @@ function saveAndNext() {
 
     const currentItem = data[currentItemIndex];
     
-    // [수정] payload 객체에 두 가지 응답을 모두 담습니다.
     const answer = {
         item_id: currentItem.id,
         task: taskType,
@@ -166,39 +161,32 @@ async function submitAllResults() {
         }
     } catch (error) {
         alert("A critical error occurred: " + error);
+    } finally {
+        submitAllBtn.disabled = false;
+        submitAllBtn.textContent = "Submit All Results";
     }
-
-    submitAllBtn.disabled = false;
-    submitAllBtn.textContent = "Submit All 100 Results";
 }
 
 // 페이지 로드 시 초기화
-window.onload = async () => {
-    // 1. URL 파라미터에서 과제 종류(task)를 읽어옴
+(async () => {
     const params = new URLSearchParams(window.location.search);
-    taskType = params.get('task'); // 'sentiment' or 'formality'
+    taskType = params.get('task');
 
     if (!taskType) {
         document.body.innerHTML = "<h1>Error: No task selected.</h1>";
         return;
     }
     
-    document.getElementById('eval-title').textContent = `Human Evaluation: ${taskType}`;
-
-    // 2. 과제 종류에 따라 다른 데이터 파일 로드
     const dataFile = `data_${taskType}.json`;
-    
     try {
         const response = await fetch(dataFile);
-        data = await response.json();
-        // 3. 데이터를 100개로 제한
-        data = data.slice(0, 100);
+        data = (await response.json()).slice(0, 100);
         displayItem();
     } catch (error) {
         alert(`Failed to load ${dataFile}.`);
     }
-};
+})();
 
 
-submitBtn.addEventListener('click', saveAndNext);
-submitAllBtn.addEventListener('click', submitAllResults);
+if (submitBtn) submitBtn.addEventListener('click', saveAndNext);
+if (submitAllBtn) submitAllBtn.addEventListener('click', submitAllResults);
