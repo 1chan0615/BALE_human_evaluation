@@ -91,9 +91,11 @@ function displayItem() {
 
 // UI를 마지막 제출 화면으로 전환하는 함수
 function showFinalSubmitScreen() {
-    if(promptSection) promptSection.style.display = 'none'; // Task Details 숨기기
+    if(promptSection) promptSection.style.display = 'none';
     if(outputsContainer) outputsContainer.style.display = 'none';
     if(evalSection) evalSection.style.display = 'none';
+    if(guidanceSection) guidanceSection.style.display = 'none';
+
     if(finalSection) finalSection.style.display = 'block';
 }
 
@@ -118,7 +120,10 @@ function saveAndNext() {
     };
     
     allAnswers.push(answer);
-    console.log(`Answer #${currentItemIndex + 1} saved locally.`);
+
+    console.log(`[SAVE] Answer #${currentItemIndex + 1} saved locally.`);
+    console.log("Saved Answer Object:", answer);
+    console.log("Current allAnswers array:", allAnswers);
 
     currentItemIndex++;
     reasonText.value = '';
@@ -143,16 +148,19 @@ async function submitAllResults() {
     submitAllBtn.disabled = true;
     submitAllBtn.textContent = "Submitting...";
 
-    const payloadToSend = allAnswers.map(answer => {
-        return {
-            evaluator_id: evaluatorId, // 여기서 ID 추가
-            item_id: answer.item_id,
-            task: answer.task,
-            winner_constraint: answer.winner_constraint,
-            winner_naturalness: answer.winner_naturalness,
-            reason: answer.reason
-        };
-    });
+    const payloadToSend = allAnswers.map(answer => ({
+        evaluator_id: evaluatorId,
+        item_id: answer.item_id,
+        task: answer.task,
+        winner_constraint: answer.winner_constraint,
+        winner_naturalness: answer.winner_naturalness,
+        reason: answer.reason
+    }));
+
+    // --- [디버깅 로그 2] ---
+    console.log("[SUBMIT] Payload to be sent to Google Sheets:");
+    console.log(payloadToSend);
+    // ------------------------
 
     try {
         const response = await fetch(SCRIPT_URL, {
