@@ -24,6 +24,7 @@ let evaluatorId, taskType;
 let currentItemIndex = 0;
 let data = [];
 let allAnswers = []; // 모든 답변을 저장할 배열
+let currentAssignment = {}; // A, B가 어떤 원본 모델에 할당되었는지 저장
 
 // --- 함수 ---
 
@@ -33,6 +34,18 @@ function displayItem() {
         return;
     }
     const item = data[currentItemIndex];
+
+    if (Math.random() < 0.5) {
+        // 정방향: 화면 A = 원본 A, 화면 B = 원본 B
+        modelAText.textContent = item.model_A.output;
+        modelBText.textContent = item.model_B.output;
+        currentAssignment = { 'A': item.model_A.name, 'B': item.model_B.name };
+    } else {
+        // 역방향: 화면 A = 원본 B, 화면 B = 원본 A
+        modelAText.textContent = item.model_B.output;
+        modelBText.textContent = item.model_A.output;
+        currentAssignment = { 'A': item.model_B.name, 'B': item.model_A.name };
+    }
 
     promptText.textContent = item.prompt;
     modelAText.textContent = item.model_A_output;
@@ -112,6 +125,11 @@ function saveAndNext() {
 
     const currentItem = data[currentItemIndex];
     
+    const getRealWinner = (choice) => {
+            if (choice === 'Tie') return 'Tie';
+            return currentAssignment[choice];
+        };
+
     const answer = {
         item_id: currentItem.id,
         task: taskType,
