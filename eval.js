@@ -48,8 +48,6 @@ function displayItem() {
     }
 
     promptText.textContent = item.prompt;
-    modelAText.textContent = item.model_A_output;
-    modelBText.textContent = item.model_B_output;
 
     // --- [수정됨] 상세 정보 표시 ---
     document.getElementById('prompt-text').textContent = item.prompt;
@@ -133,8 +131,8 @@ function saveAndNext() {
     const answer = {
         item_id: currentItem.id,
         task: taskType,
-        winner_constraint: constraintChoice.value,
-        winner_naturalness: naturalnessChoice.value,
+        winner_constraint: getRealWinner(constraintChoice.value),
+        winner_naturalness: getRealWinner(naturalnessChoice.value),
         reason: reasonText.value.trim()
     };
     
