@@ -30,76 +30,60 @@ let currentAssignment = {}; // A, B가 어떤 원본 모델에 할당되었는�
 
 function displayItem() {
     if (currentItemIndex >= data.length) {
-        document.body.innerHTML = "<h1>Thank you for completing the evaluation!</h1>";
+        // 평가가 끝나면 최종 제출 화면을 보여주는 함수 호출
+        showFinalSubmitScreen();
         return;
     }
     const item = data[currentItemIndex];
 
+    // --- 1. A/B 결과물을 랜덤으로 섞어서 표시 ---
     if (Math.random() < 0.5) {
-        // 정방향: 화면 A = 원본 A, 화면 B = 원본 B
         modelAText.textContent = item.model_A.output;
         modelBText.textContent = item.model_B.output;
         currentAssignment = { 'A': item.model_A.name, 'B': item.model_B.name };
     } else {
-        // 역방향: 화면 A = 원본 B, 화면 B = 원본 A
         modelAText.textContent = item.model_B.output;
         modelBText.textContent = item.model_A.output;
         currentAssignment = { 'A': item.model_B.name, 'B': item.model_A.name };
     }
-
+    
+    // --- 2. Task Details 정보 표시 ---
     promptText.textContent = item.prompt;
-
-    // --- [수정됨] 상세 정보 표시 ---
-    document.getElementById('prompt-text').textContent = item.prompt;
-    const constraintsList = document.getElementById('constraints-list');
     constraintsList.innerHTML = ''; // 이전 목록 초기화
 
-    // must_have 정보 추가
     if (item.must_have && item.must_have.length > 0) {
         const li = document.createElement('li');
         li.innerHTML = `<strong>Must Have:</strong> ${item.must_have.join(', ')}`;
         constraintsList.appendChild(li);
     }
-    // forbidden 정보 추가
     if (item.forbidden && item.forbidden.length > 0) {
         const li = document.createElement('li');
         li.innerHTML = `<strong>Forbidden:</strong> ${item.forbidden.join(', ')}`;
         constraintsList.appendChild(li);
     }
-    // sentiment 정보 추가
     if (item.sentiment) {
         const li = document.createElement('li');
         li.innerHTML = `<strong>Sentiment:</strong> ${item.sentiment}`;
         constraintsList.appendChild(li);
     }
-    // ----------------------------
 
-    modelAText.textContent = item.model_A_output;
-    modelBText.textContent = item.model_B_output;
-    
-    // 진행 상황 업데이트
-    progressText.textContent = `${currentItemIndex + 1} / ${data.length}`;
-    progressIndicator.style.width = `${((currentItemIndex + 1) / data.length) * 100}%`;
-    const reminderElement = document.getElementById('prompt-reminder-text');
-    let reminderParts = []; // 표시할 제약 조건들을 담을 배열
-
-    // 1. must_have 추가
+    // --- 3. 질문 아래 제약조건 미리보기 표시 ---
+    let reminderParts = [];
     if (item.must_have && item.must_have.length > 0) {
         reminderParts.push(`Concepts: ${item.must_have.join(', ')}`);
     }
-    // 2. sentiment 추가 (존재할 경우)
     if (item.sentiment) {
         reminderParts.push(`Sentiment: ${item.sentiment}`);
     }
-    // 3. forbidden 추가 (존재할 경우)
     if (item.forbidden && item.forbidden.length > 0) {
         reminderParts.push(`Forbidden: ${item.forbidden.join(', ')}`);
     }
-
-    // 배열의 모든 부분을 ' | '로 연결하여 최종 텍스트 생성
     reminderElement.textContent = reminderParts.join(' | ');
+    
+    // --- 4. 진행 상황 업데이트 ---
+    progressText.textContent = `${currentItemIndex + 1} / ${data.length}`;
+    progressIndicator.style.width = `${((currentItemIndex + 1) / data.length) * 100}%`;
 }
-
 
 // UI를 마지막 제출 화면으로 전환하는 함수
 function showFinalSubmitScreen() {
