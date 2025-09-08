@@ -66,6 +66,13 @@ document.addEventListener('DOMContentLoaded', () => {
             constraintsList.appendChild(li);
             reminderParts.push(text);
         }
+        if (item.sentiment && item.sentiment.length > 0) {
+             const text = `Sentiment: ${item.sentiment}`;
+            const li = document.createElement('li');
+            li.innerHTML = `<strong>Sentiment:</strong> ${item.sentiment}`;
+            constraintsList.appendChild(li);
+            reminderParts.push(text);
+        }
         
         promptReminderText.textContent = reminderParts.join(' | ');
         progressText.textContent = `${currentItemIndex + 1} / ${data.length}`;
